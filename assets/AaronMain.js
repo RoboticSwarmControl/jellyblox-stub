@@ -1,3 +1,8 @@
+// learnign about javascript.  Trying to make dynamic arrays
+
+
+
+
 (function(){
 
   var gameBoard = board(),
@@ -42,11 +47,13 @@
         bitColors = [
           'black',
           'red',
-          'green'
+          'green',
+          'yellow',
+          'purple'
         ];
 
 
-      drawSquare(x, y, bitColors[bitType - 1]);
+      drawSquare(x, y, bitColors[bitType + 1]);
 
     }
 
@@ -58,17 +65,42 @@
     }
   }
 
+  function setObjectsList(board){
+    objectsList = {};
+    objectsList[0] = {};
+    //Takes a state Matrix and populates a list
+      for (var bitY = 0; bitY < board.length; bitY++) {
+      var row = board[bitY];
+
+      for (var bitX = 0; bitX < row.length; bitX++) {
+        var bit = row[bitX];
+
+        if(bit>0){
+          var onePx = [[bitY,bitX], bit];
+          objectsList[bit].push(onePx) //each entry is the (y,x) coordinate and the color of the pixel
+        }
+      };
+    };
+    
+  }
+
 
   function boardState(){
+    // -1 is obstacle (unmoveable)
+    // 0 is free space
+    // 1:n are different objects (moveable unless they are blocked)
+    // the list of moveable obstacles will be set by a function
     var stateMatrix = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 1, 0, 1, 0, 0, 0],
-      [0, 0, 0, 1, 0, 1, 0, 0, 0],
+      [0, 0, 2, 2, 0,-1, 0, 1, 0],
+      [0, 0, 0,-1, 0, 3, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0, 0, 1, 0],
-      [0, 0, 1, 0, 0, 0, 1, 0, 0],
-      [0, 0, 0, 1, 1, 1, 0, 0, 0]
+      [0,-1, 0, 0, 0, 0, 0,-1, 0],
+      [0, 0,-1, 0, 0, 0,-1, 0, 0],
+      [0, 0, 0,-1,-1,-1, 0, 0, 0]
     ];
+
+    var objectsList = setObjectsList(stateMatrix);
 
     return {
       get : get,

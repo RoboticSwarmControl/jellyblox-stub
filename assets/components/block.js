@@ -10,9 +10,8 @@ var Block = (function(window, undefined){
       y: bitY
     };
 
-    this.shape = blockShape;
+    this.updateShape(blockShape);
 
-    this.bits = getBitAddressesForShape(this.originBit, this.shape);
   }
 
 
@@ -26,7 +25,6 @@ var Block = (function(window, undefined){
 
   Block.prototype.updateShape = function(blockShape){
     this.shape = blockShape || this.shape;
-
     // update covering list of x's and y's as necessary.
     this.bits = getBitAddressesForShape(this.originBit, this.shape);
 
@@ -35,26 +33,28 @@ var Block = (function(window, undefined){
   Block.prototype.completeMove = function(direction){
 
     this.originBit = moveBit(this.originBit, direction);
-
     // update covering list of x's and y's as necessary.
     this.bits = getBitAddressesForShape(this.originBit, this.shape);    
   };
 
-  Block.prototype.tryMove = function(direction){
-    // could replace this cumbersome thing with vector multiplication later on.
-    // return new possible coordinates without updating this block.
 
+  Block.prototype.tryMove = function(direction){
+    // return new possible bit coordinates without updating this block.
     return _.map(this.bits, function(bit){
       return moveBit(bit, direction);
     });
   }
 
+  // for combining blocks when they touch.
+  Block.prototype.combineBlock = function(block){
+
+  }
+
   return Block;
 
 
-  // will have to store what bits the shape is covering as well.
 
-
+  // could replace this cumbersome thing with vector multiplication later on.
   function moveBit(bit, direction){
 
     var moved = {
@@ -80,6 +80,7 @@ var Block = (function(window, undefined){
   }
 
 
+  // will have to store what bits the shape is covering as well.
   function getBitAddressesForShape(origin, shapeState){
 
     var addresses = [];

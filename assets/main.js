@@ -5,7 +5,7 @@
     mazeBlock = new Block(0, 0, game.state),
     // new blocks will eventually need to check for exiting obstacles as well
     startBlock = new Block(1, 3, [[2]]),
-    anotherBlock = new Block(5, 0, [[3]]),
+    anotherBlock = new Block(6, 0, [[3],[3]]),
     allBlocks = [mazeBlock, startBlock, anotherBlock],
     moveableBlocks = [startBlock, anotherBlock],
     directions = {

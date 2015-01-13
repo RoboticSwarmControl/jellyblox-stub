@@ -69,7 +69,9 @@
       // Should any of the blocksToMove not move?
 
       blockedBits = _(blockedBits).uniq().flatten().value();
-
+      // TODO
+      // may need to switch this each out for a while loop
+      // checking blocked bits
       _.each(blocksNewBits, function(blockNewBits, blockNumber){
 
         _.each(blockNewBits, function(newBit){
@@ -80,6 +82,12 @@
             // remove the block that will contain that newBit.
             blocksToMove.splice(blockNumber, 1);
             blocksNewBits.splice(blockNumber, 1);
+
+            // TODO: NEED TO check newly blocked bits
+            _.each(blocksToMove.bits, function(bit){
+              blockedBits.push(bit);
+            })
+
           }
         });
       });

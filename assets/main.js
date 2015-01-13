@@ -1,116 +1,62 @@
 (function(){
 
-  var gameBoard = board(),
-    gameState = boardState();
+  var game = new BoardState(maze.generate()),
+    board = new Board('board', game.width(), game.height(), 60),
+    mazeBlock = new Block(0, 0, game.state),
+    // new blocks will eventually need to check for exiting obstacles as well
+    startBlock = new Block(1, 3, [[2]]),
+    anotherBlock = new Block(6, 0, [[3],[3]]),
+    allBlocks = [mazeBlock, startBlock, anotherBlock],
+    moveableBlocks = [startBlock, anotherBlock],
+    directions = {
+      '37' : 'left',
+      '38' : 'up',
+      '39' : 'right',
+      '40' : 'down'
+    };
 
-  gameBoard.init('board');
+  board.drawBoard(game.state);
 
-  gameBoard.drawState(gameState.get());
+  game.setBlock(startBlock);
+  game.setBlock(anotherBlock);
 
-  document.addEventListener('keydown', function(){
-    gameState.move();
-    gameBoard.drawState(gameState.get());
+  board.drawBoard(game.state);
+
+
+  document.addEventListener('keydown', function(keyEvent){
+
+    var direction = directions[keyEvent.which];
+
+    if(!direction){
+      return;
+    }
+
+    _.each(moveableBlocks, function(moveable){
+
+      var checkBlockBits = moveable.tryMove(direction);
+      var otherBlockBits = _(allBlocks).without(moveable).pluck('bits').flatten().value();
+
+      var canMove = _(checkBlockBits).map(function(checkBit){
+        return _.find(otherBlockBits, checkBit);
+      }).compact().isEmpty();
+
+// ALSOO need to check boundary of game board.
+      if(canMove){
+        console.log('move ' + direction);
+        game.unsetBlock(moveable, board.clearBit.bind(board));
+        moveable.completeMove(direction);
+        console.log(moveable);
+        game.setBlock(moveable, board.drawBit.bind(board));
+        console.log(game.state);
+        board.drawBoard(game.state);
+
+        // blocks that touch will also need to merge into one block so that they will move as whole.
+      }
+
+    });
+
   });
 
 
-
-  function board(){
-
-    var bitSize = 60,
-      canvas, drawContext;
-
-    return {
-      init : init,
-      drawState : drawState
-    };
-
-    function init(id){
-      canvas = document.getElementById(id);
-      canvas.width = 800;
-      canvas.height = 600;
-      drawContext = canvas.getContext('2d');
-    }
-
-    function drawState(board){
-      readState(board, drawBit)
-    }
-
-    function drawBit(bitX, bitY, bitType){
-
-      var x = bitSize*bitX,
-        y = bitSize*bitY,
-        bitColors = [
-          'black',
-          'red',
-          'green'
-        ];
-
-
-      drawSquare(x, y, bitColors[bitType - 1]);
-
-    }
-
-    function drawSquare(x, y, color){
-
-      drawContext.fillStyle = color;
-      drawContext.fillRect(x, y, bitSize, bitSize);
-
-    }
-  }
-
-
-  function boardState(){
-    var stateMatrix = [
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 1, 0, 1, 0, 0, 0],
-      [0, 0, 0, 1, 0, 1, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 1, 0, 0, 0, 0, 0, 1, 0],
-      [0, 0, 1, 0, 0, 0, 1, 0, 0],
-      [0, 0, 0, 1, 1, 1, 0, 0, 0]
-    ];
-
-    return {
-      get : get,
-      move : move
-    };
-
-    // dummy game state for now.
-    function get(){
-      return stateMatrix;
-    }
-
-    function move(direction){
-
-      readState(stateMatrix, moveBits);
-
-    }
-
-    function moveBits(bitX, bitY, bit){
-      if(bit > 1){
-
-        if(stateMatrix[bitY+1] && !stateMatrix[bitY+1][bitX]){
-          stateMatrix[bitY+1][bitX] = bit;
-          stateMatrix[bitY][bitX] = 0;
-        }
-      }
-    }
-
-  }
-
-
-  function readState(board, stateAction){
-    for (var bitY = 0; bitY < board.length; bitY++) {
-      var row = board[bitY];
-
-      for (var bitX = 0; bitX < row.length; bitX++) {
-        var bit = row[bitX];
-
-        if(bit){
-          stateAction(bitX, bitY, bit);
-        }
-      };
-    };
-  }
 
 })();

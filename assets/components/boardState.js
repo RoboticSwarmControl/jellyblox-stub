@@ -11,6 +11,7 @@ var BoardState = (function(window, undefined){
   BoardState.prototype.height = function(){
     return this.state.length;
   }
+
   BoardState.prototype.setBlock = function(block, callback){
     for (var i = 0; i < block.bits.length; i++) {
       // block.bits[i]

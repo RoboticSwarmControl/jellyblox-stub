@@ -23,6 +23,10 @@ var Board = (function(window, undefined){
     return this;
   }
 
+  Board.prototype.clearBoard = function(bitX, bitY){
+    this.drawContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   Board.prototype.clearBit = function(bitX, bitY){
     this.drawContext.clearRect(this.bitSize*bitX, this.bitSize*bitY, this.bitSize, this.bitSize);
   }

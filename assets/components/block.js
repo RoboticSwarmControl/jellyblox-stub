@@ -46,7 +46,14 @@ var Block = (function(window, undefined){
   }
 
   // for combining blocks when they touch.
-  Block.prototype.combineBlock = function(block){
+  Block.prototype.combineBlock = function(blockShape){
+
+  }
+
+
+  Block.prototype.getBorderBlock = function(blockShape){
+
+
 
   }
 

@@ -5,9 +5,12 @@
     mazeBlock = new Block(0, 0, game.state),
     // new blocks will eventually need to check for exiting obstacles as well
     // startBlock = new Block(3, 6, [[2]]),
+    // startBlock = new Block(3, 6, [[2]]),
+    // anotherBlock = new Block(4, 6, [[3,3],[3, 0]]),
+    // block3 = new Block(1, 1, [[2,2],[3, 0]]),
     startBlock = new Block(3, 6, [[2]]),
-    anotherBlock = new Block(4, 6, [[3,3],[3, 0]]),
-    block3 = new Block(1, 1, [[2,2],[3, 0]]),
+    anotherBlock = new Block(4, 6, [[3]]),
+    block3 = new Block(1, 1, [[2]]),
     allBlocks = [mazeBlock, startBlock, anotherBlock, block3],
     moveableBlocks = [startBlock, anotherBlock, block3],
     directions = {
@@ -31,7 +34,8 @@
     var direction = directions[keyEvent.which],
       blocksToMove = [],
       blocksNewBits = [],
-      blockedBits = [];
+      blockedBits = [],
+      blockedBitsIter = 0;
 
     if(!direction){
       return;
@@ -40,12 +44,11 @@
     _.each(moveableBlocks, function(moveable, iter){
 
       // initial moving of blocks that can move without overlapping obstacle
-      var checkBlockBits = moveable.tryMove(direction);
-      var otherBlockBits = _(allBlocks).without(moveable).pluck('bits').flatten().value();
-
-      var overlapBits = _(checkBlockBits).map(function(checkBit){
-        return _.find(otherBlockBits, checkBit);
-      }).compact().value();
+      var checkBlockBits = moveable.tryMove(direction),
+        otherBlockBits = _(allBlocks).without(moveable).pluck('bits').flatten().value(),
+        overlapBits = _(checkBlockBits).map(function(checkBit){
+          return _.find(otherBlockBits, checkBit);
+        }).compact().value();
 
 
       if(_.isEmpty(overlapBits) || !_.find(overlapBits, {value: 1})){
@@ -69,30 +72,33 @@
       // Should any of the blocksToMove not move?
 
       blockedBits = _(blockedBits).uniq().flatten().value();
-      // TODO
-      // may need to switch this each out for a while loop
-      // checking blocked bits
-      _.each(blocksNewBits, function(blockNewBits, blockNumber){
 
-        _.each(blockNewBits, function(newBit){
+      while(blockedBits[blockedBitsIter]){
+
+        _.each(blocksNewBits, function(blockNewBits, blockNumber){
 
           // if you can find the newBit in the blockedBit,
-          if(_.find(blockedBits, newBit)){
+          if(_.find(blockNewBits, {x: blockedBits[blockedBitsIter].x, y: blockedBits[blockedBitsIter].y })){
 
             // remove the block that will contain that newBit.
             blocksToMove.splice(blockNumber, 1);
             blocksNewBits.splice(blockNumber, 1);
+console.log('hellllo');
+console.log(blockNewBits);
 
-            // TODO: NEED TO check newly blocked bits
-            _.each(blocksToMove.bits, function(bit){
+            _.each(blockNewBits, function(bit){
               blockedBits.push(bit);
-            })
-
+              console.log('bit');
+              console.log(bit);
+            });
           }
-        });
-      });
 
+        });
+
+        blockedBitsIter ++;
+      }
     }
+
 
     // Unset from game state all blocks
     _.each(blocksToMove, function(moveable){

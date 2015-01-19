@@ -2,12 +2,30 @@
 <html>
 <head>
   <title></title>
+  <link rel="stylesheet" type="text/css" href="./assets/bootstrap/css/bootstrap.min.css">
 </head>
 <body>
-  <canvas id="board"></canvas>
+  <div class="container">
+    <div class="row">
+      <canvas class="col-xs-6" id="board"></canvas>
+      <div class="col-xs-3">
+        <h1>Blocks Info</h1>
+        <div id="bits-list"></div>
+      </div>
+      <div class="col-xs-3">
+        <h1>Blocked Bits</h1>
+        <div id="blocked-bits-list"></div>
+      </div>
+    </div>
+    
+  </div>
+
+
   <!-- https://lodash.com/docs -->
   <script type="text/javascript" src="./assets/utilities/lodash.js"></script>
 
+  <!-- http://www.ractivejs.org/ -->
+  <script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
   <script type="text/javascript" src="./assets/utilities/readMatrix.js"></script>
 
   <!-- Include game board components -->
@@ -15,6 +33,50 @@
   <script type="text/javascript" src="./assets/components/maze.js"></script>
   <script type="text/javascript" src="./assets/components/boardState.js"></script>
   <script type="text/javascript" src="./assets/components/board.js"></script>
+
+
+  <script type="text/template" id="block-info">
+
+    {{#blocks:i}}
+      {{>block}}
+    {{/blocks}}
+
+
+
+    <!-- {{>block}} -->
+
+    <h3>Block {{i + 1}}</h3>
+    <p><strong>Origin</strong> {{.originBit.x}}, {{.originBit.y}}</p>
+    <p><strong>Bits</strong></p>
+    <ul>
+    {{#.bits:i}}
+      {{>bit}}
+    {{/.bits}}
+    </ul>
+
+    <!-- {{/block}} -->
+
+
+    <!-- {{>bit}} -->
+    <li><strong>{{.x}}, {{.y}}</strong>  {{.value}}</li>
+    <!-- {{/bit}} -->
+  </script>
+
+
+  <script type="text/template" id="blocked-bits-info">
+
+    <ul>
+    {{#bits:i}}
+      {{>bit}}
+    {{/bits}}
+    </ul>
+
+
+    <!-- {{>bit}} -->
+    <li><strong>{{.x}}, {{.y}}</strong></li>
+    <!-- {{/bit}} -->
+  </script>
+
 
   <!-- Load main file that will initialize everything -->
   <script type="text/javascript" src="./assets/main.js"></script>

@@ -7,7 +7,7 @@
     // new blocks will eventually need to check for exiting obstacles as well
     startBlock = new Block(7, 1, [[2]]),
     anotherBlock = new Block(8, 1, [[3,3],[3, 0]]),
-    block3 = new Block(5, 1, [[2,2],[3, 0]]),
+    block3 = new Block(5, 8, [[2,2],[3, 0]]),
 
     allBlocks = [mazeBlock, startBlock, anotherBlock, block3],
     moveableBlocks = [startBlock, anotherBlock, block3],
